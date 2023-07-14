@@ -6,7 +6,7 @@ import { PokemonModule } from './pokemon/pokemon.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.env',
+      isGlobal: true,
     }),
     MongooseModule.forRootAsync({
       useFactory: () => {
