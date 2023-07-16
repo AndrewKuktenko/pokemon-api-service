@@ -15,6 +15,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { RateLimiterGuard, RateLimit } from 'nestjs-rate-limiter';
 import { PokemonService } from './pokemon.service';
 import { ERateLimit } from 'src/common/enums/rate.limit.enum';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 
 @Controller('pokemon')
 export class PokemonController {
@@ -55,6 +56,7 @@ export class PokemonController {
   }
 
   @Post('/upload')
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   async uploadPokemonsFromFile(
     @UploadedFile(

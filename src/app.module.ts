@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-import { PokemonModule } from './pokemon/pokemon.module';
+import { PokemonModule } from './modules/pokemon/pokemon.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
+import { SessionModule } from './modules/session/session.module';
 
 @Module({
   imports: [
@@ -18,6 +21,9 @@ import { PokemonModule } from './pokemon/pokemon.module';
       },
     }),
     PokemonModule,
+    AuthModule,
+    UserModule,
+    SessionModule,
   ],
   controllers: [],
   providers: [],
