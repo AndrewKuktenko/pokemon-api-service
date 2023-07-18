@@ -17,6 +17,8 @@ Get information about Pokemon using this endpoint.
 
 GET /api/v1/pokemon/<pokemon name or id>
 
+
+
 Get Pokemon list by Types value.
 
 GET /api/v1/pokemon/type/<type id or name>
