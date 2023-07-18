@@ -4,6 +4,11 @@ import { lastValueFrom } from 'rxjs';
 import { ParseResult, parse } from 'papaparse';
 import { Readable } from 'stream';
 import { IPokemon } from 'src/common/interfaces/pokemon';
+import {
+  IPokemonList,
+  IPokemonListResult,
+} from 'src/common/interfaces/pokemon.list';
+import { IPagination } from 'src/common/interfaces/pagination';
 import { Pokemon } from 'src/common/models/pokemon.model';
 import { IPokemonTypedList } from 'src/common/interfaces/pokemon.typed.list';
 import { PokemonTypedList } from 'src/common/models/pokemon.typed.list.model';
@@ -13,6 +18,8 @@ import { cleanString } from 'src/common/helpers/string.operations';
 @Injectable()
 export class PokemonService {
   constructor(private readonly httpService: HttpService) {}
+
+  private readonly TOTAL_POKEMONS = 151;
 
   async getPokemonByNameOrId(nameOrId: string): Promise<Pokemon> {
     const param = cleanString(nameOrId.toLowerCase());
@@ -136,6 +143,30 @@ export class PokemonService {
 
       throw new HttpException(
         'Failed to upload file.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async getPokemonList(pagination: IPagination): Promise<IPokemonListResult> {
+    let offset = pagination.pageSize * (pagination.pageNumber - 1);
+    const limit = pagination.pageSize;
+
+    if (offset + limit > this.TOTAL_POKEMONS) {
+      offset = this.TOTAL_POKEMONS - limit;
+    }
+
+    try {
+      const { data } = await lastValueFrom(
+        this.httpService.get<IPokemonList>(
+          `${process.env.POKEMON_API_URL}/pokemon/?limit=${limit}&offset=${offset}`,
+        ),
+      );
+
+      return { data: data.results, totalItems: this.TOTAL_POKEMONS };
+    } catch (e) {
+      throw new HttpException(
+        'Failed to get Pokemons list.',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
