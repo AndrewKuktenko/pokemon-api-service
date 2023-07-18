@@ -1,5 +1,11 @@
-import { Module } from '@nestjs/common';
+import {
+  Module,
+  NestModule,
+  MiddlewareConsumer,
+  RequestMethod,
+} from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
+import { PaginationMiddleware } from 'src/common/middleware/pagination.middleware';
 import { PokemonService } from './pokemon.service';
 import { PokemonController } from './pokemon.controller';
 import { RateLimiterModule } from 'nestjs-rate-limiter';
@@ -9,4 +15,10 @@ import { RateLimiterModule } from 'nestjs-rate-limiter';
   providers: [PokemonService],
   controllers: [PokemonController],
 })
-export class PokemonModule {}
+export class PokemonModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(PaginationMiddleware)
+      .forRoutes({ path: 'pokemon', method: RequestMethod.GET });
+  }
+}

@@ -13,9 +13,12 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { RateLimiterGuard, RateLimit } from 'nestjs-rate-limiter';
+import { Pagination } from 'src/common/decorators/pagination.decorator';
 import { PokemonService } from './pokemon.service';
 import { ERateLimit } from 'src/common/enums/rate.limit.enum';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { IPagination } from 'src/common/interfaces/pagination';
+import { PaginatedData } from 'src/common/models/paginated.data.model';
 
 @Controller('pokemon')
 export class PokemonController {
@@ -67,5 +70,22 @@ export class PokemonController {
     file: Express.Multer.File,
   ) {
     return await this.pokemonService.processFile(file);
+  }
+
+  @RateLimit({
+    keyPrefix: 'pokemon_call',
+    points: ERateLimit.POINTS,
+    duration: ERateLimit.SECONDS,
+    customResponseSchema: () => {
+      throw new HttpException(
+        'Acceded rate limit.',
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    },
+  })
+  @Get()
+  async getPokemonList(@Pagination() pagination: IPagination) {
+    const result = await this.pokemonService.getPokemonList(pagination);
+    return new PaginatedData(pagination, result.data, result.totalItems);
   }
 }
