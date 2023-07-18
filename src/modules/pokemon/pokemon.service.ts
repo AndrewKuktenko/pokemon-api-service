@@ -3,6 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 import { ParseResult, parse } from 'papaparse';
 import { Readable } from 'stream';
+import { toLower } from 'lodash';
 import { IPokemon } from 'src/common/interfaces/pokemon';
 import {
   IPokemonList,
@@ -22,7 +23,7 @@ export class PokemonService {
   private readonly TOTAL_POKEMONS = 151;
 
   async getPokemonByNameOrId(nameOrId: string): Promise<Pokemon> {
-    const param = cleanString(nameOrId.toLowerCase());
+    const param = cleanString(toLower(nameOrId));
 
     if (!param)
       throw new HttpException(
@@ -54,7 +55,7 @@ export class PokemonService {
   }
 
   async getPokemonListByType(typeOrId: string) {
-    const param = cleanString(typeOrId.toLowerCase());
+    const param = cleanString(toLower(typeOrId));
 
     if (!param)
       throw new HttpException(
