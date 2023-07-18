@@ -15,13 +15,13 @@ Application runs on PORT **:3000**
 
 Get information about Pokemon using this endpoint.
 
-GET /api/v1/pokemon/<pokemon name or id>
+GET /api/v1/pokemon/[pokemon name or id]
 
 
 
 Get Pokemon list by Types value.
 
-GET /api/v1/pokemon/type/<type id or name>
+GET /api/v1/pokemon/type/[type id or name]
 
 Upload file to get pokemons result. 
 **Note:** File must have .CSV extension. Application reads first column of the file's row. Endpoint can accept no more than 20 rows in the document.
