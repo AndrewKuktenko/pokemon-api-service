@@ -54,7 +54,7 @@ export class PokemonService {
     }
   }
 
-  async getPokemonListByType(typeOrId: string) {
+  async getPokemonListByType(typeOrId: string): Promise<PokemonTypedList> {
     const param = cleanString(toLower(typeOrId));
 
     if (!param)
