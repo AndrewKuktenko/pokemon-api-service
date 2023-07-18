@@ -76,8 +76,12 @@ export class AuthService {
 
   private async validate(dto: SignInDto): Promise<UserDocument> {
     const user = await this.userService.getUserByEmail(dto.email);
+    if (!user)
+      throw new UnauthorizedException({
+        message: 'This email does not exist. Please, sign up.',
+      });
     const isEqual = await bcrypt.compare(dto.password, user.password);
-    if (user && isEqual) {
+    if (isEqual) {
       return user;
     }
     throw new UnauthorizedException({

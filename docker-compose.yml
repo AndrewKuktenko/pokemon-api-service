@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  api-service:
+    container_name: api-service
+    build: 
+      context: .
+    env_file:
+      - .development.env
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - 3000:3000
+      - 9229:9229
+    command: npm run start:dev
+    depends_on:
+      - api-service-mongo
+    restart: always
+  api-service-mongo:
+    container_name: api-service-mongo
+    image: mongo:4.2.11
+    env_file:
+      - .development.env
+    ports:
+    - 127.0.0.1:27017:27017
+    volumes:
+    - data-volume:/data/db
+    restart: always
+
+volumes:
+  data-volume:
