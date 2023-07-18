@@ -10,6 +10,7 @@ import { SessionModule } from './modules/session/session.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: `.${process.env.NODE_ENV}.env`,
     }),
     MongooseModule.forRootAsync({
       useFactory: () => {
